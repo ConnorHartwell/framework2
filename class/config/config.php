@@ -11,8 +11,8 @@
         public const DBTYPE	= 'mysql';
         public const DBHOST	= 'localhost';
         public const DB	= 'logger';
-        public const DBUSER	= 'CONNOR';
-        public const DBPW	= '2610';
+        public const DBUSER	= 'adminroot';
+        public const DBPW	= 'test';
         public const SITENAME	= 'ULog';
         public const SITENOREPLY	= 'noreply@localhost.org';
         public const SYSADMIN	= 'conmanrox@gmail.com';
