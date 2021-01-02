@@ -1,0 +1,18 @@
+.project {
+border: 2px solid black;
+height:100px;
+text-align: center;
+}
+
+.createproject {
+border: 2px dotted black;
+height: 100px;
+text-align: center;
+} 
+
+.center {
+    text-align: center;
+    vertical-align:middle;
+    line-height:90px;
+}
+
