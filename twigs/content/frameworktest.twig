@@ -51,9 +51,9 @@
 #}
 
 {% extends '@content/page.twig' %}
-
-{# this brings in some useful macros for making forms
 {% import '@util/formmacro.twig' as f %}
+{# this brings in some useful macros for making forms
+
 #}
 
 {# this brings in macros for accessing values in the config database
@@ -125,14 +125,25 @@
 
 {% block header %}
     <article class="col-md-12">
-        <h1 class="text-center">{{project}}</h1>
+        <h1 class="text-center">{{action}}</h1>
     </article>
 {% endblock header %}
 
 {% block main %}
+
+        {% set options = [{text: '&mdash;Select&mdash;', value: ''}] %}
+            ,
+            {% for item in project %}
+                {% set options = options|merge([{text: item, value: 1}]) %}
+            {% endfor %}
+
     <section class="row">
         <article class="ml-auto col-md-8 mr-auto">
-            <p class="text-center">Coming Soon</p>
+            <p class="text-center">
+            {{f.startform}}
+                {{f.select({label:'select',options:options})}}
+            {{f.endform}}
+            </p>
         </article>
     </section>
 {% endblock main %}

@@ -49,11 +49,9 @@
    You can set a schema that describes the page with this variable - see http://schema.org for what values are available
 {% set schema = 'itemscope="" itemtype="http://schema.org/AboutPage"' %}
 #}
-{% set ajax = TRUE %}
-{% set parsley = TRUE %}
+
 {% extends '@content/page.twig' %}
 
-{% import '@util/formmacro.twig' as f %}
 {# this brings in some useful macros for making forms
 {% import '@util/formmacro.twig' as f %}
 #}
@@ -80,6 +78,7 @@
 
 {% block css %}
 {# <link> for any other CSS files you need #}
+<link rel="stylesheet" type="text/css " href="/logger/assets/css/note.css">
 {% endblock css %}
 
 {# If you want some inline CSS then put it in this block - no <style> tags - it is better NOT to use this though!!
@@ -94,6 +93,8 @@
 
 {% block scripts %}
 {# <script src=""></script> for any other JS files you need #}
+<script src=""></script>
+
 {% endblock scripts %}
 
 {% block setup %}
@@ -101,7 +102,6 @@
 {% endblock setup %}
 
 {% block onload %}
-    $('#addProject').parsley()
 {# Any javascript you need that MUST run on load goes in this block. ***NB you don't need <script></script> tags here*** #}
 {% endblock onload %}
 
@@ -126,24 +126,36 @@
     default. You then don't need to have a header block either.
 #}
 
-
-
 {% block header %}
     <article class="col-md-12">
-        <h1 class="text-center">Create project</h1>
+    <div class="row">
+        <h1 class="text-center col-md-6 mt-3">{{project.name}}</h1>
+        <h2 class="text-center col-md-6 mt-3"><a href="{{base}}/note/create/{{project.id}}">create note</a></h2>
+    </div>
     </article>
 {% endblock header %}
 
 {% block main %}
     <section class="row">
-        <article class="ml-auto col-md-8 mr-auto">
-            {% include '@util/message.twig' %}
-            {{f.startform({name:'addProject', method: 'post', class: 'jumbotron', id:'addProject'})}}
-                {{f.text({label:'Name', name:'name', ph:'Project name...',required: TRUE, parsley: {type: 'alphanum'}})}}
-
-                {{f.submit({value: 'Create'})}}
-
-            {{f.endform}}
+        <article class="ml-auto col-md-12 mr-auto">
+            <div class="row" style="height:32em">
+                <div id="notes"  class="text-center col-md-10">
+                <!--
+                    all note titles available in this column.
+                -->
+                {%if notes|length == 0 %}
+                    <p id="nonotes">
+                        No notes here... <a href="{{base}}/note/create/{{project.id}}">start now!</a>
+                    </p>
+                {%else%}
+                    {%for note in notes %}
+                        <div class="note">
+                            <a class="link" href="{{base}}/note/{{note.id}}">{{note.title}}</a>
+                        </div>
+                    {%endfor %}
+                {%endif%}
+                </div>
+            </div>
         </article>
     </section>
 {% endblock main %}

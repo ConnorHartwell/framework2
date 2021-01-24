@@ -1,6 +1,6 @@
 <?php
 /**
- * A class that contains code to handle any requests for  /notes/
+ * A class that contains code to handle any requests for  /testingtesting/
  *
  * @author Your Name <Your@email.org>
  * @copyright year You
@@ -11,12 +11,12 @@
 
     use \Support\Context as Context;
 /**
- * Support /notes/
+ * Support /testingtesting/
  */
-    class Notes extends \Framework\Siteaction
+    class frameworktest extends \Framework\Siteaction
     {
 /**
- * Handle notes operations
+ * Handle testingtesting operations
  *
  * @param Context   $context    The context object for the site
  *
@@ -24,7 +24,9 @@
  */
         public function handle(Context $context)
         {
-            return '@content/notes.twig';
+            $projects = array("one","two");
+            $context->local()->addval('project',$projects);
+            return '@content/frameworktest.twig';
         }
     }
 ?>

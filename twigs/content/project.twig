@@ -126,7 +126,7 @@
 
 {% block header %}
     <article class="col-md-12">
-        <h1 class="text-center">{{action}}</h1>
+        <h1 class="text-center">All Projects</h1>
     </article>
 {% endblock header %}
 
@@ -134,12 +134,16 @@
 <div class="container">
     <div class="row">
         {% for item in projects %}
-        <div class="ml-2 col-md-3 mr-2 mb-4 project">
-            <a class = "center" href="{{base}}/notes/{{item.id}}">{{item.name}}</a>
-        </div>
+
+
+            <div class="ml-1 col-md-3 mb-4 project">
+                <a class = "center" href="{{base}}/project/{{item.id}}">{{item.name}}</a>
+            </div>
+
+
         {% endfor %}
         <div class="ml-2 col-md-3 mr-2 mb-4 createproject" style="height:100px;">
-            <a class="center" href="{{base}}/createproject">Create New Project...</a>
+            <a class="center" href="{{base}}/project/create">Create New Project...</a>
         </div>
     </div>
 </div>

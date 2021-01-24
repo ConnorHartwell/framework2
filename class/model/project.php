@@ -27,6 +27,9 @@
             \R::store($p);
         }
 
+        public static function findProjectById(int $id) : \RedbeanPHP\OODBBean {
+            return \R::findOne('project','id = ' . $id);
+        }
 
         public function isActive() : bool
         {

@@ -9,7 +9,8 @@
  */
     namespace Pages;
 
-use Model\Project as modelProject;
+use Model\Project as mProject;
+use Model\Note as mNote;
 use \Support\Context as Context;
 /**
  * Support /project/
@@ -27,36 +28,58 @@ use \Support\Context as Context;
         {
             //check either post, get or not
 
-
-/**
+            $rest = $context->rest();
+/** 
  *  /project operation
  */
             if($context->action() == 'project') {
-                // 
-                $this->getAllProjects($context);
-                return '@content/project.twig';
-            }
+                // check it is /all or /value
 
-/**
- *  GET /createproject returns web page
- *  POST /createproject create new project given name.
- */
-            else if($context->action() == 'createproject') {
-                $rest = $context->rest();
-                if($context->web()->isPost()) {
-                    $this->addProject($context);
-                    return $context->divert("/project");
-                } else {
-                    return '@content/createproject.twig';
+                //   /project/all
+                if($rest[0] === "all") 
+                {
+                    $this->getAllProjects($context);
+                    return '@content/project.twig';
+                } 
+
+
+                //   /project/1/
+                else if(is_numeric($rest[0])) 
+                {
+                    $project = $this->getProjectById($rest[0]);
+
+                    
+                    $context->local()->addval('project',$project);
+                    $context->local()->addVal('notes',$this->getNotesInProject($rest[0]));
+                    return "@content/notelist.twig";
+    
                 }
 
+                //GET /project/create - open page to create new project
+                //POST /project/create - create new project in database.
+                else if($rest[0] === "create") {
+
+                    if($context->web()->isPost()) {
+                        $this->addProject($context);
+                        return $context->divert("/project/all");
+                    } else {
+                        return '@content/createproject.twig';
+                    }
+                }
+
+                return '@content\contact.php';
             }
-
-
-            
-            
-            //if get, single project or all projects?
         }
+
+
+
+
+
+
+
+
+
+
 
         public function addProject(Context $context) : void
         {
@@ -69,7 +92,7 @@ use \Support\Context as Context;
             if($projName !== '') {
 
                 //create project bean
-                modelProject::createProject($projName, $context->user(), $now);
+                mProject::createProject($projName, $context->user(), $now);
 
             }
         }
@@ -77,11 +100,11 @@ use \Support\Context as Context;
 
 /**
  *  Get all projects associated with an email.
- * 
+ *  //TODO: ensure user is logged in.
  */
     public function getAllProjects(Context $context) : void 
     {
-        $projects = \R::find('project','author_id = ' . $context->user()->id);
+        $projects = \R::find('project','active = TRUE AND author_id = ' . $context->user()->id);
         $context->local()->addval('projects',$projects);
     }
 
@@ -90,10 +113,18 @@ use \Support\Context as Context;
 /**
  * Get information about a single project by id
  * 
+ * Controller function checks for security before sending to the model.
  */
-    public function getProjectById(int $projectId) : void {}
+    public function getProjectById(int $projectId) :  \RedbeanPHP\OODBBean
+    {
+        //secure this with user.
+        return mProject::findProjectById($projectId);
+    }
 
-
+    //TODO: secure this with user.
+    public function getNotesInProject(int $project) : array {
+        return mNote::getAllNotes($project);
+    }
 /**
  * Delete project, handling post form.
  * ---------------------
