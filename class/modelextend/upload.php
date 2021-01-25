@@ -33,6 +33,26 @@
         {
             return $this->bean->user->equals($user) || $user->isadmin();
         }
+
+
+        public static function uploadFile(Context $context, array $file, \RedBeanPHP\OODBBean $note) {
+
+
+            $upl = \R::dispense('upload');
+            $upl->savefile($context, $file, TRUE, $context->user(), 0);
+            $upl->note = $note;
+            \R::store($upl);
+        }
+
+
+
+        public static function getUploads(Context $context, int $noteid) 
+        {
+            $uploads = \R::findAll('upload', 'note_id = ' . $noteid);
+            $context->local()->addval('uploads', $uploads);
+        }
+
+        public static function deleteUpload(int $uploadid) {}
 /**
  * Hook for adding extra data to a file save.
  *

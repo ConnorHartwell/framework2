@@ -13,6 +13,8 @@
     use \RedbeanPHP as R;
     use \Model\Project as mProject;
     use \Model\Note as mNote;
+    use ModelExtend\Upload;
+
 /**
  * Support /notes/
  */
@@ -58,7 +60,8 @@
 
             else if(is_numeric($rest[0])) 
             {
-                $context->local()->addval('note',$this->getNote($rest[0]));
+                //$context->local()->addval('note',$this->getNote($context));
+                $this->getNote($context,$rest[0]);
                 return '@content/note.twig';
             }
         }
@@ -71,7 +74,10 @@
             if($context->web()->isPost()) {
                 $fdt = $context->formData('post');
                 $now = $context->utcnow();
-                mNote::createNote(  $fdt->mustFetch('title'),
+                $formd = $context->formData('file');
+                $file = $formd->fileArray('addfile',[]);
+
+                $noteid = mNote::createNote(  $fdt->mustFetch('title'),
                                     $fdt->mustFetch('text'),
                                     $context->user(),
                                     $projectid, 
@@ -79,6 +85,10 @@
                                     $fdt->fetch('endTime', $now),
                                     $now
                                 );
+                if(count($file) > 0) 
+                {
+                    Upload::uploadFile($context, $file, mNote::getNoteById($noteid));
+                }
             }
         }
 
@@ -91,9 +101,13 @@
 /**
  * When a user clicks on a note, we need to retrieve any attachments linked to
  * related note.
+ * 
+ * @param $context - current page context
+ * @param $noteid - id of note to view.
  */
-        public function getNote(int $noteid) : \RedbeanPHP\OODBBean {
-            return mNote::getNoteById($noteid);
+        public function getNote(Context $context, int $noteid) : void {
+            mNote::getNoteById($noteid)->loadNote($context);
+            Upload::findUploads($context,$noteid);
         }
     }
 ?>

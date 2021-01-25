@@ -16,3 +16,7 @@ text-align: center;
     line-height:90px;
 }
 
+.underline {
+    border-bottom: 2px solid black;
+    margin-bottom:0.5em;
+  }

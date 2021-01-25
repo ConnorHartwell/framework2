@@ -76,10 +76,10 @@
 {# <link> for webfonts #}
 {% endblock type %}
 
-{% block css %}
-{# <link> for any other CSS files you need #}
-{% endblock css %}
 
+{% block css %}
+    <link rel="stylesheet" type="text/css " href="/logger/assets/css/note.css">
+{% endblock css %}
 {# If you want some inline CSS then put it in this block - no <style> tags - it is better NOT to use this though!!
 {% block style %}
 {% endblock style %}
@@ -124,15 +124,15 @@
 #}
 
 {% block header %}
-    <article class="col-md-12">
-        <h1 class="text-center">{{note.title}}</h1>
+    <article class="col-md-6">
+        <h1 class="title">{{note.title}}</h1>
     </article>
 {% endblock header %}
 
 {% block main %}
     <section class="row">
-        <article class="ml-auto col-md-8 mr-auto">
-            <p class="text-center">{{note.text}}</p>
+        <article class="ml-auto col-md-10 mr-auto">
+            <p>{{note.text}}</p>
         </article>
     </section>
 {% endblock main %}

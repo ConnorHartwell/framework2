@@ -132,13 +132,14 @@
         <article class="ml-auto col-md-8 mr-auto">
             <p class="text-center">
             
-                {{f.startform({name:'addNote', method: 'post', class: 'jumbotron', id:'addNote'})}}
+                {{f.startform({name:'addNote', method: 'post', multi:'TRUE', class: 'jumbotron', id:'addNote'})}}
                     {{f.text({label:'Title', name:'title', parsley: {type: 'alphanum'}})}}
                     {{f.textarea({label:'Note', name:'text', ph:'note...',required: TRUE, parsley: {type: 'alphanum'}})}}
-
+                    {{f.file({label:'File:', name:'addfile',multiple:'TRUE'})}}
                     {{f.submit({value: 'Create'})}}
 
                 {{f.endform}}
+
             </p>
         </article>
     </section>

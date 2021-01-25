@@ -32,7 +32,8 @@ use \Support\Context as Context;
 /** 
  *  /project operation
  */
-            if($context->action() == 'project') {
+            if($context->action() == 'project') 
+            {
                 // check it is /all or /value
 
                 //   /project/all
@@ -46,11 +47,22 @@ use \Support\Context as Context;
                 //   /project/1/
                 else if(is_numeric($rest[0])) 
                 {
+
+
                     $project = $this->getProjectById($rest[0]);
+                    if(count($rest) == 2) {
+                        if($rest[1] == 'settings') 
+                        {
+                            $this->loadUsers($context,$project);
+                            return "@content/settings.twig";
+                        }
+
+                    }
+
 
                     
                     $context->local()->addval('project',$project);
-                    $context->local()->addVal('notes',$this->getNotesInProject($rest[0]));
+                    $this->getNotesInProject($context,$rest[0]);
                     return "@content/notelist.twig";
     
                 }
@@ -122,8 +134,13 @@ use \Support\Context as Context;
     }
 
     //TODO: secure this with user.
-    public function getNotesInProject(int $project) : array {
-        return mNote::getAllNotes($project);
+    public function getNotesInProject(Context $context, int $project) : void {
+        mNote::getAllNotes($context, $project);
+    }
+
+
+    private function loadUsers(Context $context, \RedBeanPHP\OODBBean $project) {
+        $project->loadUsers($context);
     }
 /**
  * Delete project, handling post form.
