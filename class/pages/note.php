@@ -2,8 +2,8 @@
 /**
  * A class that contains code to handle any requests for  /notes/
  *
- * @author Your Name <Your@email.org>
- * @copyright year You
+ * @author Connor Hartwell <c.hartwell@newcastle.ac.uk>
+ * @copyright 2020 Connor Hartwell
  * @package Framework
  * @subpackage UserPages
  */
@@ -42,27 +42,46 @@
 
             //if a note is specified.
 
-            
-            if($rest[0] === "create" && $context->web()->isPost() == FALSE) {
-                //TODO: secure this - ensure the user is logged on.
-                //should always have a rest[1].
-                return "@content/createnote.twig";
-            }
-            else if($rest[0] === "create" && $context->web()->isPost() == TRUE) {
-                
-                //TODO: require rest[1]. throw an error otherwise. 
-                $projectid = $rest[1];
-                
-                $this->addNote($context, $projectid);
-                return $context->divert("/project/" . $projectid);
-            }
-
-
-            else if(is_numeric($rest[0])) 
+            if($context->web()->isPost() == TRUE)
             {
-                //$context->local()->addval('note',$this->getNote($context));
-                $this->getNote($context,$rest[0]);
-                return '@content/note.twig';
+                // /note/create/<projectid>
+                if($rest[0] === "create")
+                {
+                    $projectid = $rest[1];
+                
+                    $this->addNote($context, $projectid);
+                    return $context->divert("/project/" . $projectid,FALSE,'Note created.', FALSE, TRUE);
+                }
+                // /note/<id>/delete
+                else if(is_numeric($rest[0]))
+                {
+                    if(count($rest) == 2 && $rest[1] === "delete")
+                    {
+                        //lazy writing but works.
+                        $note = mNote::getNoteById($rest[0]);
+                        
+                        mNote::deleteNote($context,mNote::getNoteById($rest[0]));
+                        return $context->divert("/project/" . $note->project_id);
+                    }
+                    
+
+                }
+            }
+            else
+            {
+                if($rest[0] === "create")
+                {
+                                    //TODO: secure this - ensure the user is logged on.
+                //should always have a rest[1].
+                mProject::hasAccess(mProject::findProjectById($rest[1]),$context);
+                return "@content/createnote.twig";
+                }
+                else if(is_numeric($rest[0])) 
+                {
+                    //$context->local()->addval('note',$this->getNote($context));
+                    $this->getNote($context,$rest[0]);
+                    return '@content/note.twig';
+                }
             }
         }
         
@@ -72,23 +91,8 @@
         //TODO: implement start and end time
         private function addNote(Context $context, int $projectid) {
             if($context->web()->isPost()) {
-                $fdt = $context->formData('post');
-                $now = $context->utcnow();
-                $formd = $context->formData('file');
-                $file = $formd->fileArray('addfile',[]);
 
-                $noteid = mNote::createNote(  $fdt->mustFetch('title'),
-                                    $fdt->mustFetch('text'),
-                                    $context->user(),
-                                    $projectid, 
-                                    $fdt->fetch('startTime', $now),
-                                    $fdt->fetch('endTime', $now),
-                                    $now
-                                );
-                if(count($file) > 0) 
-                {
-                    Upload::uploadFile($context, $file, mNote::getNoteById($noteid));
-                }
+                $noteid = mNote::createNote(  $context, $projectid );
             }
         }
 
@@ -106,8 +110,9 @@
  * @param $noteid - id of note to view.
  */
         public function getNote(Context $context, int $noteid) : void {
-            mNote::getNoteById($noteid)->loadNote($context);
-            Upload::findUploads($context,$noteid);
+            $note = mNote::getNoteById($noteid);
+            $note->loadNote($context);
+            Upload::getUploads($context,$note);
         }
     }
 ?>

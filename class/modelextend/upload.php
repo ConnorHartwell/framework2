@@ -12,6 +12,8 @@
     namespace ModelExtend;
 
     use \Support\Context;
+    use \Model\Project as mProject;
+    use \Model\Note as mNote;
 /**
  * Upload table stores info about files that have been uploaded...
  */
@@ -31,25 +33,42 @@
  */
         public function canaccess($user, string $op = 'r') : bool
         {
-            return $this->bean->user->equals($user) || $user->isadmin();
+            $project = mProject::findProjectById(mNote::getNoteById($this->bean->note_id)->project_id);
+            return mProject::userAccess($project, $user);
         }
 
-
-        public static function uploadFile(Context $context, array $file, \RedBeanPHP\OODBBean $note) {
-
-
-            $upl = \R::dispense('upload');
-            $upl->savefile($context, $file, TRUE, $context->user(), 0);
-            $upl->note = $note;
-            \R::store($upl);
-        }
-
-
-
-        public static function getUploads(Context $context, int $noteid) 
+/**
+ * Upload a file to the database
+ * Adds note to project.
+ * 
+ * @param Context - current context
+ * @param $file - file to upload.
+ * @param $note - linked note to this upload.
+ * 
+ */
+        public static function uploadFile(Context $context, array $file, \RedBeanPHP\OODBBean $note) 
         {
-            $uploads = \R::findAll('upload', 'note_id = ' . $noteid);
-            $context->local()->addval('uploads', $uploads);
+            
+            if(mProject::hasAccess(mProject::findProjectById($note->project_id),$context))
+            {
+                $upl = \R::dispense('upload');
+                $upl->savefile($context, $file, TRUE, $context->user(), 0);
+                $upl->note = $note;
+                \R::store($upl);
+            }
+        }
+
+
+
+        public static function getUploads(Context $context, \RedBeanPHP\OODBBean $note) 
+        {
+            //check user has admin access or access to this note.
+            //not worth checking each upload individually.
+            if(mProject::hasAccess(mProject::findProjectById($note->project_id),$context))
+            {            
+                $uploads = \R::findAll('upload', 'note_id = ' . $note->id);
+                $context->local()->addval('uploads', $uploads);
+            }
         }
 
         public static function deleteUpload(int $uploadid) {}

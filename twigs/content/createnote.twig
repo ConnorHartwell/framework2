@@ -135,6 +135,16 @@
                 {{f.startform({name:'addNote', method: 'post', multi:'TRUE', class: 'jumbotron', id:'addNote'})}}
                     {{f.text({label:'Title', name:'title', parsley: {type: 'alphanum'}})}}
                     {{f.textarea({label:'Note', name:'text', ph:'note...',required: TRUE, parsley: {type: 'alphanum'}})}}
+
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="datetime-local" required name="startTime"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="datetime-local" required name="endTime"></input>
+                    </div>
                     {{f.file({label:'File:', name:'addfile',multiple:'TRUE'})}}
                     {{f.submit({value: 'Create'})}}
 

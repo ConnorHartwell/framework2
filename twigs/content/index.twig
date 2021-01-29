@@ -1,5 +1,16 @@
 {% extends '@content/page.twig' %}
 
+{% block meta %}
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<meta name="description" content="Create teams, create projects and work collaboratively with friends and coworkers using this new logging tool." />
+<meta name="keywords" content="Notes, Projects, Collaboration, Teamwork" />
+<meta name="author" content="Connor Hartwell" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock meta %}
+
+
 {% block onload %}
     $('#alert').on('click', function(){
         bootbox.alert('Hello World')
@@ -8,24 +19,20 @@
 
 {% block header %}
     <section class="col-md-12 mt-5">
-        <h1 class="text-center">Header</h1>
+        <h1 class="text-center">ULog</h1>
     </section>
 {% endblock header %}
 
 {% block main %}
     <section class="row">
-        <aside class="col">
-            <p>Left</p>
-        </aside>
-        <article class="col-md-8">
-            <div class="jumbotron">
-                This is the middle column
-            </div>
-            <button id="alert" class="btn btn-lg btn-info" type="button">Alert</button>
-        </article>
-        <aside id="rightbar" class="col">
-            <p>Right</p>
-        </aside>
+        <p class = "col-md-12 text-center">
+            This is a website made to allow you to make notes, work collaboratively and upload files in an easy-to-use manner.
+            <br />
+            Please feel free to browse around, create projects, add teammates and start on your next project together!
+            <br />
+        </p>
+        <div class = "col-md-12 text-center">
+        <a href="/project/all"> Open the projects page! </a>
     </section>
 {% endblock main %}
 

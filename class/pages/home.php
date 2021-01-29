@@ -26,6 +26,7 @@
  */
         public function handle(Context $context)
         {
+
             return '@content/index.twig';
         }
     }

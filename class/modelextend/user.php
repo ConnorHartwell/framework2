@@ -47,6 +47,26 @@
         {
             return [];
         }
+
+        public static function findFromEmail(string $email) : \RedbeanPHP\OODBBean
+        {
+            $user = \R::findOne('user', 'email = \'' . $email . '\'');
+            if($user !== NULL) 
+            {
+                return $user;
+            } 
+            else
+            {   
+                throw new \Framework\Exception\BadValue('User does not exist in database'); 
+            }   
+            
+        }
+
+        public static function findFromId(int $id) : \RedbeanPHP\OODBBean
+        {
+            $user =  \R::findOne('user', 'id = ' . $id);
+            return $user;
+        }
 /**
  * Called from the "add" function when a new user is created.
  * This allows you to do any extra operations that you want to when a user is added

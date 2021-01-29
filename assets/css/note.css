@@ -1,5 +1,5 @@
 .note {
-    background-color: white;
+    background-color: #eeeeee;
     color: #4d3221;
 
     border:1px solid #4d3221;;  
@@ -9,27 +9,34 @@
     width:100%;
     
     padding:0.5em;
-    margin:1em;
+    margin:0.5em;
 }
 
-.title {
-    border-bottom: 2px solid black;
+.title 
+{
     text-align:center;
 }
 
+.lineBreakBottom
+{
+    border-bottom: 1px solid black;
+}
 
-#nonotes {
+#nonotes 
+{
     position:relative;
     top:10em;
     height:50%;
     color:grey;
 }
 
-.link {
-    margin:4em;
+.link 
+{
+    margin:2em;
 }
 
-.note:hover {
+.note:hover 
+{
     background-color: #4d3221;
     color: white;
 }

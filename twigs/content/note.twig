@@ -1,71 +1,14 @@
-{#
-    There several variables you can set at the top of a Twig to control some of the things
-    that the Framework includes in the output. Look at twigs/content/page.twig to see all
-    the possible variables and how they are used.
-#}
-{#
-    If your page uses AJAX include this line at the start of the file - it loads a different version of jQuery.
-{% set ajax = TRUE %}
-#}
-{#
-    If your page uses the Framework JS util package include this line at the start of the file
-{% set fwutils = TRUE %}
-#}
-{#
-    If your page uses Parsley include this line at the start of the file
-{% set parsley = TRUE %}
-#}
-{#
-    If your page uses the inline editable package include this line at the start of the file
-{% set editable = TRUE %}
-#}
 
-{#
-    If your page does NOT need not use bootbox then this will stop the JS being loaded for it
-{% set usebootbox = FALSE %}
-#}
-
-{#
-    if you want to set the title of your  page that is displayed in browser tabs set this variable
-{% set title = 'My Page Title' %}
-#}
-
-{#
-   If you want a breadcrumb trail below the navbar set this
-{% set breadcrumbs = [{link:'url1', text: 'Top Level'}, {link: 'url2': text: 'Second level'}, {text: 'Where we are'}] %}
-#}
-
-{#
-   If you want a <meta> Keywords tag set this
-{% set keywords = 'Framework, PHP, RedBean' %}
-#}
-
-{#
-   If you want a <meta> Description tag set this
-{% set description = 'A PHP framework for building RESTful systems' %}
-#}
-
-{#
-   You can set a schema that describes the page with this variable - see http://schema.org for what values are available
-{% set schema = 'itemscope="" itemtype="http://schema.org/AboutPage"' %}
-#}
 
 {% extends '@content/page.twig' %}
-
-{# this brings in some useful macros for making forms
-{% import '@util/formmacro.twig' as f %}
-#}
-
-{# this brings in macros for accessing values in the config database
-{% import '@util/attrmacro.twig' as h %}
-#}
-
-{# this brings in some useful macros for making modals
-{% import '@util/modalmacro.twig' as m %}
-#}
+{% import '@content/iconmacro.twig' as fa %}
 
 {% block meta %}
-{# <meta> for things like keywords etc.#}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<meta name="keywords" content="Notes, Projects, Collaboration, Teamwork" />
+<meta name="author" content="Connor Hartwell" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 {% endblock meta %}
 
 {% block links %}
@@ -80,15 +23,7 @@
 {% block css %}
     <link rel="stylesheet" type="text/css " href="/logger/assets/css/note.css">
 {% endblock css %}
-{# If you want some inline CSS then put it in this block - no <style> tags - it is better NOT to use this though!!
-{% block style %}
-{% endblock style %}
-#}
 
-{# If you want to add critical CSS then put it in this block - no <style> tags
-{% block criticalCSS %}
-{% endblock criticalCSS %}
-#}
 
 {% block scripts %}
 {# <script src=""></script> for any other JS files you need #}
@@ -102,51 +37,42 @@
 {# Any javascript you need that MUST run on load goes in this block. ***NB you don't need <script></script> tags here*** #}
 {% endblock onload %}
 
-{# uncomment this if you don't want the default navbar to appear
-{% block navigation %}
-{% endblock navigation %}
-#}
-
-{#
-    Edit the file navbar.twig to change the appearance of the
-    navigation bar. It is included by default from page.twig
-#}
-
-{# uncomment this and delete header block below to remove the <header> tag altogether
-{% block pageheader %}
-{% endblock pageheader %}
-#}
-
-{#
-    If you have a standard header for all (most) pages then put the
-    content in the file twigs/surround/header.twig. It is included by page.twig by
-    default. You then don't need to have a header block either.
-#}
-
 {% block header %}
-    <article class="col-md-6">
-        <h1 class="title">{{note.title}}</h1>
+    <article class="ml-auto col-md-10 mr-auto">
+            <a href="{{base}}/project/{{note.project_id}}">{{fa.fa('arrow-left', 'text-center fa-2x col-md-3 mt-3')}}</a>
+            <h1 class="title">{{note.title}}</h1>
+        <p class=" text-center">{{note.start_time}} - {{note.end_time}}</p>
     </article>
 {% endblock header %}
 
 {% block main %}
-    <section class="row">
+    <section class="row text-center">
         <article class="ml-auto col-md-10 mr-auto">
+        {% include '@util/message.twig' %}
+            <h2> Note: </h2>
+            <br />
             <p>{{note.text}}</p>
+            <br />
+
+            {% if(uploads|length > 0) %}
+            <h3 class="lineBreakBottom">Uploads</h3>
+            <p>
+            {% for upload in uploads %}
+                <a href = "{{base}}/private/file/{{upload.getID}}"> {{upload.filename}} </a> <br />
+            {% endfor %}
+            </p>
+            {% endif %}
+            <br />
+            {% if (owner) %}
+                <form method="post", class='fclass', action= "{{base}}/note/{{note.id}}/delete">
+                    <input type="submit" class='btn btn-danger' value="Delete Note" />
+                </form>
+            {% endif %}
         </article>
     </section>
 {% endblock main %}
 
-{# uncomment this and delete the footer block below to remove the <footer> tag altogether
-{% block pagefooter %}
-{% endblock pagefooter %}
-#}
 
-{#
-    If you have a standard footer for all (most) pages then put the
-    content in the file twigs/surround/footer.twig. It is included by page.twig by
-    default. You then don't need to have a footer block either.
-#}
 
 {% block footer %}
     <article class="col-md-12">
